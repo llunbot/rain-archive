@@ -1,0 +1,8 @@
+name: Singapore
+
+on: push
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
