@@ -82,9 +82,11 @@ export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
  * }}
  */
 export function pastTwoHoursTimestamps() {
+  const tenMinutesAgo = Date.now() - 600_000
+
   return {
-    50: [],
-    240: [],
-    480: [],
+    50: Array.from({ length: 25 }, (_, key) => tenMinutesAgo - 300_000 * key),
+    240: Array.from({ length: 9 }, (_, key) => tenMinutesAgo - 900_000 * key),
+    480: Array.from({ length: 5 }, (_, key) => tenMinutesAgo - 1_800_000 * key),
   }
 }

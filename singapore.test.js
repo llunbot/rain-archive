@@ -59,7 +59,7 @@ test('#fetchRainAreaImage downloads image from weather.gov.sg and save into the 
   fs.unlinkSync(imagePath)
 })
 
-test.only('#pastTwoHoursTimestamps returns set of timestamps in the past two hours for downloading images', (t) => {
+test('#pastTwoHoursTimestamps returns set of timestamps in the past two hours for downloading images', (t) => {
   // Timestamp at 10 minutes before, making sure the image is exists
   const pastTenMinutes = Date.now() - 600000
   const timestamps = pastTwoHoursTimestamps()
