@@ -3,6 +3,9 @@
  * @typedef {50 | 240 | 480} AreaSizeInKm
  */
 import DateFnsTz from 'date-fns-tz'
+import fetch from 'node-fetch'
+import fs from 'fs'
+import { URL } from 'url'
 
 const { format, utcToZonedTime } = DateFnsTz
 
@@ -56,8 +59,17 @@ export function getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm) {
  *
  * @param {number} timestamp
  * @param {AreaSizeInKm} areaSizeInKm
- * @returns {Promise<string>}
+ * @returns {Promise<string | null>}
  */
 export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
-  return ''
+  const stringUrl = getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm)
+  const response = await fetch(stringUrl)
+  if (response.status !== 200) {
+    return null
+  }
+  const data = await response.buffer()
+  const imageUrl = new URL(stringUrl)
+  const fileName = imageUrl.pathname.split('/').pop()
+  fs.writeFileSync(fileName, data)
+  return fileName
 }
