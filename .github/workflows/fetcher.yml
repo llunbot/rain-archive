@@ -1,0 +1,12 @@
+name: Dev
+
+on: push
+
+jobs:
+  singapore:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    name: Singapore
+    steps:
+      - name: Run Action
+        uses: llun/rain-archive@main
