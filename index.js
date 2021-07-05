@@ -1,8 +1,6 @@
 // @ts-check
-import { setup } from './repository'
-
 async function run() {
-  await setup()
+  console.log('Loading')
 }
 
 run()

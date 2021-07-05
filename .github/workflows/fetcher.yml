@@ -1,4 +1,4 @@
-name: Dev
+name: Fetcher
 
 on: push
 
@@ -8,5 +8,15 @@ jobs:
     if: github.ref == 'refs/heads/main'
     name: Singapore
     steps:
-      - name: Run Action
-        uses: llun/rain-archive@main
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: Setup yarn, npm
+        run: |
+          yarn install
+      - name: Fetch singapore
+        run: |
+          node index.js
