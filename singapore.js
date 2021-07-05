@@ -1,4 +1,7 @@
 // @ts-check
+/**
+ * @typedef {50 | 240 | 480} AreaSizeInKm
+ */
 import DateFnsTz from 'date-fns-tz'
 
 const { format, utcToZonedTime } = DateFnsTz
@@ -24,7 +27,7 @@ export function getFileNameTime(timestamp, minutesFloor) {
  * Get weather.gov.sg url from timestamp
  *
  * @param {number} timestamp
- * @param {50 | 240 | 480} areaSizeInKm
+ * @param {AreaSizeInKm} areaSizeInKm
  * @returns {string | null}
  */
 export function getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm) {
@@ -47,4 +50,14 @@ export function getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm) {
     default:
       return null
   }
+}
+
+/**
+ *
+ * @param {number} timestamp
+ * @param {AreaSizeInKm} areaSizeInKm
+ * @returns {Promise<string>}
+ */
+export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
+  return ''
 }
