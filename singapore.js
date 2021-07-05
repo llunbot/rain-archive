@@ -34,6 +34,8 @@ export function getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm) {
         timestamp,
         5
       )}dBR.dpsri.png`
+    case 240:
+      return ''
     default:
       return ''
   }
