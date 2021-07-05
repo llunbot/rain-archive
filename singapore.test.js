@@ -5,6 +5,7 @@ import {
   getFileNameTime,
   getRainAreaUrlFromTimestamp,
   fetchRainAreaImage,
+  pastTwoHoursTimestamps,
 } from './singapore.js'
 
 test('#getFileNameTime return date from timestamp in Singapore timezone', (t) => {
@@ -49,11 +50,67 @@ test('#getRainAreaUrlFromTimestamp returns rain area image url for specific time
 
 test('#fetchRainAreaImage downloads image from weather.gov.sg and save into the disk', async (t) => {
   // Timestamp at 10 minutes before, making sure the image is exists
-  const timestamp = Date.now() - 600000
+  const timestamp = Date.now() - 600_000
   const imagePath = await fetchRainAreaImage(timestamp, 50)
   t.is(imagePath, `dpsri_70km_${getFileNameTime(timestamp, 5)}dBR.dpsri.png`)
   t.notThrows(() => {
     fs.statSync(imagePath)
   }, 'Image file should exist')
   fs.unlinkSync(imagePath)
+})
+
+test.only('#pastTwoHoursTimestamps returns set of timestamps in the past two hours for downloading images', (t) => {
+  // Timestamp at 10 minutes before, making sure the image is exists
+  const pastTenMinutes = Date.now() - 600000
+  const timestamps = pastTwoHoursTimestamps()
+  t.deepEqual(
+    {
+      50: [
+        pastTenMinutes,
+        pastTenMinutes - 300_000,
+        pastTenMinutes - 600_000,
+        pastTenMinutes - 900_000,
+        pastTenMinutes - 1_200_000,
+        pastTenMinutes - 1_500_000,
+        pastTenMinutes - 1_800_000,
+        pastTenMinutes - 2_100_000,
+        pastTenMinutes - 2_400_000,
+        pastTenMinutes - 2_700_000,
+        pastTenMinutes - 3_000_000,
+        pastTenMinutes - 3_300_000,
+        pastTenMinutes - 3_600_000,
+        pastTenMinutes - 3_900_000,
+        pastTenMinutes - 4_200_000,
+        pastTenMinutes - 4_500_000,
+        pastTenMinutes - 4_800_000,
+        pastTenMinutes - 5_100_000,
+        pastTenMinutes - 5_400_000,
+        pastTenMinutes - 5_700_000,
+        pastTenMinutes - 6_000_000,
+        pastTenMinutes - 6_300_000,
+        pastTenMinutes - 6_600_000,
+        pastTenMinutes - 6_900_000,
+        pastTenMinutes - 7_200_000,
+      ],
+      240: [
+        pastTenMinutes,
+        pastTenMinutes - 900_000,
+        pastTenMinutes - 1_800_000,
+        pastTenMinutes - 2_700_000,
+        pastTenMinutes - 3_600_000,
+        pastTenMinutes - 4_500_000,
+        pastTenMinutes - 5_400_000,
+        pastTenMinutes - 6_300_000,
+        pastTenMinutes - 7_200_000,
+      ],
+      480: [
+        pastTenMinutes,
+        pastTenMinutes - 1_800_000,
+        pastTenMinutes - 3_600_000,
+        pastTenMinutes - 5_400_000,
+        pastTenMinutes - 7_200_000,
+      ],
+    },
+    timestamps
+  )
 })

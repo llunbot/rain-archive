@@ -73,3 +73,18 @@ export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
   fs.writeFileSync(fileName, data)
   return fileName
 }
+
+/**
+ * Return sets of past two hours timestamps for each map area size
+ *
+ * @returns {{
+ *  [key in AreaSizeInKm]: number[]
+ * }}
+ */
+export function pastTwoHoursTimestamps() {
+  return {
+    50: [],
+    240: [],
+    480: [],
+  }
+}
