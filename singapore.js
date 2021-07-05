@@ -63,6 +63,7 @@ export function getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm) {
  */
 export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
   const stringUrl = getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm)
+  if (!stringUrl) return null
   const response = await fetch(stringUrl)
   if (response.status !== 200) {
     return null
@@ -70,6 +71,7 @@ export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
   const data = await response.buffer()
   const imageUrl = new URL(stringUrl)
   const fileName = imageUrl.pathname.split('/').pop()
+  if (!fileName) return null
   fs.writeFileSync(fileName, data)
   return fileName
 }

@@ -52,6 +52,10 @@ test('#fetchRainAreaImage downloads image from weather.gov.sg and save into the 
   // Timestamp at 10 minutes before, making sure the image is exists
   const timestamp = Date.now() - 600_000
   const imagePath = await fetchRainAreaImage(timestamp, 50)
+  if (!imagePath) {
+    t.fail('Image path must not be null')
+    return
+  }
   t.is(imagePath, `dpsri_70km_${getFileNameTime(timestamp, 5)}dBR.dpsri.png`)
   t.notThrows(() => {
     fs.statSync(imagePath)
