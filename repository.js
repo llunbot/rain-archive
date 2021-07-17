@@ -1,3 +1,5 @@
+import { spawnSync } from 'child_process'
+
 /**
  *
  * @param {string[]} commands
