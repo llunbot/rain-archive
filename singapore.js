@@ -5,6 +5,7 @@
 import DateFnsTz from 'date-fns-tz'
 import fetch from 'node-fetch'
 import fs from 'fs'
+import path from 'path'
 import { URL } from 'url'
 import {
   getDataPath,
@@ -12,7 +13,6 @@ import {
   makeSureDirectoryExist,
   sleep,
 } from './repository.js'
-import path from 'path/posix'
 
 const { format, utcToZonedTime } = DateFnsTz
 
