@@ -6,8 +6,7 @@ import DateFnsTz from 'date-fns-tz'
 import fetch from 'node-fetch'
 import fs from 'fs'
 import { URL } from 'url'
-import { Octokit } from '@octokit/rest'
-import { runCommand } from './repository.js'
+import { loadDataBranch } from './repository.js'
 
 const { format, utcToZonedTime } = DateFnsTz
 
@@ -103,19 +102,7 @@ export function pastTwoHoursTimestamps() {
  */
 export async function fetcher(timestamp) {
   console.log('Load singapore rain areas in past 2 hours')
-
-  const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
-  const root = workspace.slice(0, workspace.length - 1).join('/')
-  console.log(root)
-  runCommand(['ls', root])
-
-  const octokit = new Octokit({
-    auth: process.env['GITHUB_TOKEN'],
-  })
-  const [owner, repo] = (process.env['GITHUB_REPOSITORY'] || '').split('/')
-  const response = await octokit.repos.listBranches({
-    owner,
-    repo,
-  })
-  console.log(response)
+  if (process.env['GITHUB_REPOSITORY']) {
+    await loadDataBranch()
+  }
 }
