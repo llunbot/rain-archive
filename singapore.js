@@ -6,6 +6,7 @@ import DateFnsTz from 'date-fns-tz'
 import fetch from 'node-fetch'
 import fs from 'fs'
 import { URL } from 'url'
+import { runCommand } from './repository'
 
 const { format, utcToZonedTime } = DateFnsTz
 
@@ -101,4 +102,5 @@ export function pastTwoHoursTimestamps() {
  */
 export async function fetcher(timestamp) {
   console.log('Load singapore rain areas in past 2 hours')
+  runCommand(['pwd'])
 }

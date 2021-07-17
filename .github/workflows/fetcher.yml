@@ -19,4 +19,4 @@ jobs:
           yarn install
       - name: Fetch singapore
         run: |
-          node index.js
+          node index.js -r singapore
