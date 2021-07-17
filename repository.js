@@ -54,7 +54,7 @@ export async function loadDataBranch() {
   }
 
   if (!isBranchExist) {
-    console.log(`Create content branch ${branch}`)
+    console.log(`Create content branch ${dataBranch}`)
     const branchResult = runCommand(
       ['git', 'checkout', '-B', dataBranch],
       join(root, dataBranch)
