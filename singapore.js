@@ -1,12 +1,18 @@
 // @ts-check
 /**
- * @typedef {50 | 240 | 480} AreaSizeInKm
+ * @typedef {'sg50km' | 'sg240km' | 'sg480km'} AreaSizeInKm
  */
 import DateFnsTz from 'date-fns-tz'
 import fetch from 'node-fetch'
 import fs from 'fs'
 import { URL } from 'url'
-import { loadDataBranch } from './repository.js'
+import {
+  getDataPath,
+  loadContentBranch,
+  makeSureDirectoryExist,
+  sleep,
+} from './repository.js'
+import path from 'path/posix'
 
 const { format, utcToZonedTime } = DateFnsTz
 
@@ -36,17 +42,17 @@ export function getFileNameTime(timestamp, minutesFloor) {
  */
 export function getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm) {
   switch (areaSizeInKm) {
-    case 50:
+    case 'sg50km':
       return `http://www.weather.gov.sg/files/rainarea/50km/v2/dpsri_70km_${getFileNameTime(
         timestamp,
         5
       )}dBR.dpsri.png`
-    case 240:
+    case 'sg240km':
       return `http://www.weather.gov.sg/files/rainarea/240km/dpsri_240km_${getFileNameTime(
         timestamp,
         15
       )}dBR.dpsri.png`
-    case 480:
+    case 'sg480km':
       return `http://www.weather.gov.sg/files/rainarea/480km/dpsri_480km_${getFileNameTime(
         timestamp,
         30
@@ -60,9 +66,10 @@ export function getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm) {
  *
  * @param {number} timestamp
  * @param {AreaSizeInKm} areaSizeInKm
+ * @param {string} [root]
  * @returns {Promise<string | null>}
  */
-export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
+export async function fetchRainAreaImage(timestamp, areaSizeInKm, root) {
   const stringUrl = getRainAreaUrlFromTimestamp(timestamp, areaSizeInKm)
   if (!stringUrl) return null
   const response = await fetch(stringUrl)
@@ -73,24 +80,34 @@ export async function fetchRainAreaImage(timestamp, areaSizeInKm) {
   const imageUrl = new URL(stringUrl)
   const fileName = imageUrl.pathname.split('/').pop()
   if (!fileName) return null
-  fs.writeFileSync(fileName, data)
-  return fileName
+  fs.writeFileSync(path.join(root ?? '', fileName), data)
+  return path.join(root ?? '', fileName)
 }
 
 /**
  * Return sets of past two hours timestamps for each map area size
  *
+ * @param {number} timestamp
  * @returns {{
  *  [key in AreaSizeInKm]: number[]
  * }}
  */
-export function pastTwoHoursTimestamps() {
-  const tenMinutesAgo = Date.now() - 600_000
+export function pastTwoHoursTimestamps(timestamp) {
+  const tenMinutesAgo = timestamp - 600_000
 
   return {
-    50: Array.from({ length: 25 }, (_, key) => tenMinutesAgo - 300_000 * key),
-    240: Array.from({ length: 9 }, (_, key) => tenMinutesAgo - 900_000 * key),
-    480: Array.from({ length: 5 }, (_, key) => tenMinutesAgo - 1_800_000 * key),
+    sg50km: Array.from(
+      { length: 25 },
+      (_, key) => tenMinutesAgo - 300_000 * key
+    ),
+    sg240km: Array.from(
+      { length: 9 },
+      (_, key) => tenMinutesAgo - 900_000 * key
+    ),
+    sg480km: Array.from(
+      { length: 5 },
+      (_, key) => tenMinutesAgo - 1_800_000 * key
+    ),
   }
 }
 
@@ -102,7 +119,35 @@ export function pastTwoHoursTimestamps() {
  */
 export async function fetcher(timestamp) {
   console.log('Load singapore rain areas in past 2 hours')
-  if (process.env['GITHUB_REPOSITORY']) {
-    await loadDataBranch()
+  await loadContentBranch()
+  const { sg50km, sg240km, sg480km } = pastTwoHoursTimestamps(timestamp)
+  // Load all 480km area images
+  for (const time of sg480km) {
+    await fetchRainAreaImage(
+      time,
+      'sg480km',
+      makeSureDirectoryExist(path.join(getDataPath(), 'singapore', '480'))
+    )
+    await sleep(1000)
+  }
+
+  // Load all 240km area images
+  for (const time of sg240km) {
+    await fetchRainAreaImage(
+      time,
+      'sg240km',
+      makeSureDirectoryExist(path.join(getDataPath(), 'singapore', '240'))
+    )
+    await sleep(1000)
+  }
+
+  // Load all 50km area images
+  for (const time of sg50km) {
+    await fetchRainAreaImage(
+      time,
+      'sg50km',
+      makeSureDirectoryExist(path.join(getDataPath(), 'singapore', '50'))
+    )
+    await sleep(1000)
   }
 }

@@ -21,29 +21,29 @@ test('#getFileNameTime return date from timestamp in Singapore timezone', (t) =>
 
 test('#getRainAreaUrlFromTimestamp returns rain area image url for specific timestamp', (t) => {
   t.is(
-    getRainAreaUrlFromTimestamp(1625369575346, 50),
+    getRainAreaUrlFromTimestamp(1625369575346, 'sg50km'),
     'http://www.weather.gov.sg/files/rainarea/50km/v2/dpsri_70km_2021070411300000dBR.dpsri.png'
   )
   t.is(
-    getRainAreaUrlFromTimestamp(1625383277705, 50),
+    getRainAreaUrlFromTimestamp(1625383277705, 'sg50km'),
     'http://www.weather.gov.sg/files/rainarea/50km/v2/dpsri_70km_2021070415200000dBR.dpsri.png'
   )
 
   t.is(
-    getRainAreaUrlFromTimestamp(1625369575346, 240),
+    getRainAreaUrlFromTimestamp(1625369575346, 'sg240km'),
     'http://www.weather.gov.sg/files/rainarea/240km/dpsri_240km_2021070411300000dBR.dpsri.png'
   )
   t.is(
-    getRainAreaUrlFromTimestamp(1625383277705, 240),
+    getRainAreaUrlFromTimestamp(1625383277705, 'sg240km'),
     'http://www.weather.gov.sg/files/rainarea/240km/dpsri_240km_2021070415150000dBR.dpsri.png'
   )
 
   t.is(
-    getRainAreaUrlFromTimestamp(1625369575346, 480),
+    getRainAreaUrlFromTimestamp(1625369575346, 'sg480km'),
     'http://www.weather.gov.sg/files/rainarea/480km/dpsri_480km_2021070411300000dBR.dpsri.png'
   )
   t.is(
-    getRainAreaUrlFromTimestamp(1625383277705, 480),
+    getRainAreaUrlFromTimestamp(1625383277705, 'sg480km'),
     'http://www.weather.gov.sg/files/rainarea/480km/dpsri_480km_2021070415000000dBR.dpsri.png'
   )
 })
@@ -51,7 +51,7 @@ test('#getRainAreaUrlFromTimestamp returns rain area image url for specific time
 test('#fetchRainAreaImage downloads image from weather.gov.sg and save into the disk', async (t) => {
   // Timestamp at 10 minutes before, making sure the image is exists
   const timestamp = Date.now() - 600_000
-  const imagePath = await fetchRainAreaImage(timestamp, 50)
+  const imagePath = await fetchRainAreaImage(timestamp, 'sg50km')
   if (!imagePath) {
     t.fail('Image path must not be null')
     return
@@ -64,12 +64,13 @@ test('#fetchRainAreaImage downloads image from weather.gov.sg and save into the 
 })
 
 test('#pastTwoHoursTimestamps returns set of timestamps in the past two hours for downloading images', (t) => {
+  const now = Date.now()
   // Timestamp at 10 minutes before, making sure the image is exists
-  const pastTenMinutes = Date.now() - 600000
-  const timestamps = pastTwoHoursTimestamps()
+  const pastTenMinutes = now - 600000
+  const timestamps = pastTwoHoursTimestamps(now)
   t.deepEqual(
     {
-      50: [
+      sg50km: [
         pastTenMinutes,
         pastTenMinutes - 300_000,
         pastTenMinutes - 600_000,
@@ -96,7 +97,7 @@ test('#pastTwoHoursTimestamps returns set of timestamps in the past two hours fo
         pastTenMinutes - 6_900_000,
         pastTenMinutes - 7_200_000,
       ],
-      240: [
+      sg240km: [
         pastTenMinutes,
         pastTenMinutes - 900_000,
         pastTenMinutes - 1_800_000,
@@ -107,7 +108,7 @@ test('#pastTwoHoursTimestamps returns set of timestamps in the past two hours fo
         pastTenMinutes - 6_300_000,
         pastTenMinutes - 7_200_000,
       ],
-      480: [
+      sg480km: [
         pastTenMinutes,
         pastTenMinutes - 1_800_000,
         pastTenMinutes - 3_600_000,

@@ -1,6 +1,10 @@
 import { spawnSync } from 'child_process'
 import { Octokit } from '@octokit/rest'
 import { join } from 'path'
+import path from 'path/posix'
+import { statSync, mkdirSync } from 'fs'
+
+const DATA_BRANCH = 'contents'
 
 /**
  *
@@ -14,12 +18,12 @@ export function runCommand(commands, cwd) {
   })
 }
 
-export async function loadDataBranch() {
-  const dataBranch = 'data'
+export async function loadContentBranch() {
+  if (!process.env['GITHUB_WORKSPACE']) {
+    return
+  }
   const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
   const root = workspace.slice(0, workspace.length - 1).join('/')
-  console.log(root)
-  runCommand(['ls', root])
 
   const token = process.env['GITHUB_TOKEN']
   const octokit = new Octokit({
@@ -32,8 +36,8 @@ export async function loadDataBranch() {
   })
   const isBranchExist = response.data
     .map((item) => item.name)
-    .includes(dataBranch)
-  const checkoutBranch = isBranchExist ? dataBranch : 'main'
+    .includes(DATA_BRANCH)
+  const checkoutBranch = isBranchExist ? DATA_BRANCH : 'main'
   const user = process.env['GITHUB_ACTOR']
   const cloneUrl = `https://${user}:${token}@github.com/${owner}/${repo}`
   const cloneResult = runCommand(
@@ -45,7 +49,7 @@ export async function loadDataBranch() {
       '--depth',
       '1',
       cloneUrl,
-      dataBranch,
+      DATA_BRANCH,
     ],
     root
   )
@@ -54,10 +58,10 @@ export async function loadDataBranch() {
   }
 
   if (!isBranchExist) {
-    console.log(`Create content branch ${dataBranch}`)
+    console.log(`Create content branch ${DATA_BRANCH}`)
     const branchResult = runCommand(
-      ['git', 'checkout', '-B', dataBranch],
-      join(root, dataBranch)
+      ['git', 'checkout', '-B', DATA_BRANCH],
+      join(root, DATA_BRANCH)
     )
     if (branchResult.error) {
       throw new Error('Fail to switch branch')
@@ -65,4 +69,44 @@ export async function loadDataBranch() {
   }
 
   runCommand(['ls', root])
+}
+
+/**
+ *
+ * @param {string} path
+ */
+export function makeSureDirectoryExist(path) {
+  try {
+    statSync(path)
+  } catch (error) {
+    mkdirSync(path, { recursive: true })
+  }
+  return path
+}
+
+/**
+ * Get rain images content path
+ * @returns {string}
+ */
+export function getDataPath() {
+  if (process.env['GITHUB_WORKSPACE']) {
+    const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
+    const root = workspace.slice(0, workspace.length - 1).join('/')
+    return path.join(root, DATA_BRANCH)
+  }
+
+  const rains = path.join('/tmp', 'rains')
+  makeSureDirectoryExist(rains)
+  return rains
+}
+
+/**
+ * Wait time in milliseconds
+ *
+ * @param {number} ms
+ */
+export async function sleep(ms) {
+  await new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
 }
