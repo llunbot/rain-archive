@@ -21,8 +21,9 @@ export async function loadDataBranch() {
   console.log(root)
   runCommand(['ls', root])
 
+  const token = process.env['GITHUB_TOKEN']
   const octokit = new Octokit({
-    auth: process.env['GITHUB_TOKEN'],
+    auth: token,
   })
   const [owner, repo] = (process.env['GITHUB_REPOSITORY'] || '').split('/')
   const response = await octokit.repos.listBranches({
