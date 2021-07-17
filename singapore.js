@@ -5,6 +5,7 @@
 import DateFnsTz from 'date-fns-tz'
 import fetch from 'node-fetch'
 import fs from 'fs'
+import path from 'path'
 import { URL } from 'url'
 import { runCommand } from './repository.js'
 
@@ -102,7 +103,9 @@ export function pastTwoHoursTimestamps() {
  */
 export async function fetcher(timestamp) {
   console.log('Load singapore rain areas in past 2 hours')
-  runCommand(['pwd'])
-  console.log(process.env['GITHUB_WORKSPACE'])
-  runCommand(['ls', process.env['GITHUB_WORKSPACE'] || ''])
+
+  const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
+  const root = workspace.slice(0, workspace.length - 1).join('/')
+  console.log(root)
+  runCommand(['ls', root])
 }
