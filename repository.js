@@ -1,7 +1,6 @@
 import { spawnSync } from 'child_process'
 import { Octokit } from '@octokit/rest'
 import { join } from 'path'
-import path from 'path/posix'
 import { statSync, mkdirSync } from 'fs'
 
 const DATA_BRANCH = 'contents'
@@ -92,10 +91,10 @@ export function getDataPath() {
   if (process.env['GITHUB_WORKSPACE']) {
     const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
     const root = workspace.slice(0, workspace.length - 1).join('/')
-    return path.join(root, DATA_BRANCH)
+    return join(root, DATA_BRANCH)
   }
 
-  const rains = path.join('/tmp', 'rains')
+  const rains = join('/tmp', 'rains')
   makeSureDirectoryExist(rains)
   return rains
 }
