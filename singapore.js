@@ -6,7 +6,7 @@ import DateFnsTz from 'date-fns-tz'
 import fetch from 'node-fetch'
 import fs from 'fs'
 import { URL } from 'url'
-import { runCommand } from './repository'
+import { runCommand } from './repository.js'
 
 const { format, utcToZonedTime } = DateFnsTz
 
