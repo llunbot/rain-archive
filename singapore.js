@@ -103,4 +103,6 @@ export function pastTwoHoursTimestamps() {
 export async function fetcher(timestamp) {
   console.log('Load singapore rain areas in past 2 hours')
   runCommand(['pwd'])
+  console.log(process.env['GITHUB_ACTION_PATH'])
+  runCommand(['ls', process.env['GITHUB_ACTION_PATH'] || ''])
 }
