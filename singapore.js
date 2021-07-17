@@ -92,3 +92,13 @@ export function pastTwoHoursTimestamps() {
     480: Array.from({ length: 5 }, (_, key) => tenMinutesAgo - 1_800_000 * key),
   }
 }
+
+/**
+ *
+ * Start fetch rain area images with timestamp
+ *
+ * @param {number} timestamp
+ */
+export async function fetcher(timestamp) {
+  console.log('Load singapore rain areas in past 2 hours')
+}
