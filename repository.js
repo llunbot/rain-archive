@@ -65,9 +65,37 @@ export async function loadContentBranch() {
     if (branchResult.error) {
       throw new Error('Fail to switch branch')
     }
+
+    runCommand(
+      [
+        'rm',
+        '-rf',
+        '.github',
+        '.eslintrc.json',
+        '.gitignore',
+        '*.js',
+        '*.md',
+        '*.json',
+        '*.lock',
+      ],
+      join(root, DATA_BRANCH)
+    )
   }
 
   runCommand(['ls', root])
+}
+
+export async function pushContentBranch() {
+  if (!process.env['GITHUB_WORKSPACE']) {
+    return
+  }
+
+  const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
+  const root = workspace.slice(0, workspace.length - 1).join('/')
+
+  const token = process.env['GITHUB_TOKEN']
+  runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
+  runCommand(['git', 'push'], join(root, DATA_BRANCH))
 }
 
 /**

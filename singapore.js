@@ -11,6 +11,7 @@ import {
   getDataPath,
   loadContentBranch,
   makeSureDirectoryExist,
+  pushContentBranch,
   sleep,
 } from './repository.js'
 
@@ -150,4 +151,6 @@ export async function fetcher(timestamp) {
     )
     await sleep(1000)
   }
+
+  await pushContentBranch()
 }
