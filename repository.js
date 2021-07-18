@@ -1,7 +1,7 @@
 import { spawnSync } from 'child_process'
 import { Octokit } from '@octokit/rest'
 import { join } from 'path'
-import { statSync, mkdirSync } from 'fs'
+import { statSync, mkdirSync, readdirSync } from 'fs'
 
 const DATA_BRANCH = 'contents'
 
@@ -67,6 +67,8 @@ export async function loadContentBranch() {
     }
 
     runCommand(['pwd'], join(root, DATA_BRANCH))
+    const lists = readdirSync(join(root, DATA_BRANCH))
+    console.log(lists)
     runCommand(
       [
         'rm',
