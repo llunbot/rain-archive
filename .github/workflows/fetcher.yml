@@ -2,6 +2,9 @@ name: Fetcher
 
 on: push
 
+schedule:
+  - cron: '30 * * * *'
+
 jobs:
   singapore:
     runs-on: ubuntu-latest
