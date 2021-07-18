@@ -80,6 +80,7 @@ export async function loadContentBranch() {
       ],
       join(root, DATA_BRANCH)
     )
+    runCommand(['ls', '-l'], join(root, DATA_BRANCH))
     runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
     runCommand(
       ['git', 'push', '-u', 'origin', DATA_BRANCH],
