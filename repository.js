@@ -87,7 +87,7 @@ export async function loadContentBranch() {
       join(root, DATA_BRANCH)
     )
     runCommand(
-      ['git', 'push', '-f', pushUrl, `head:${DATA_BRANCH}`],
+      ['git', 'push', '-f', pushUrl, `HEAD:${DATA_BRANCH}`],
       join(root, DATA_BRANCH)
     )
     console.log('Push empty branch')
@@ -113,7 +113,7 @@ export async function pushContentBranch() {
     join(root, DATA_BRANCH)
   )
   runCommand(
-    ['git', 'push', '-f', pushUrl, `head:${DATA_BRANCH}`],
+    ['git', 'push', '-f', pushUrl, `HEAD:${DATA_BRANCH}`],
     join(root, DATA_BRANCH)
   )
 }
