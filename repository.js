@@ -66,6 +66,7 @@ export async function loadContentBranch() {
       throw new Error('Fail to switch branch')
     }
 
+    runCommand(['pwd'], join(root, DATA_BRANCH))
     runCommand(
       [
         'rm',
@@ -80,18 +81,19 @@ export async function loadContentBranch() {
       ],
       join(root, DATA_BRANCH)
     )
-    runCommand(['ls', '-l'], join(root, DATA_BRANCH))
-    runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
-    runCommand(
-      ['git', 'push', '-u', 'origin', DATA_BRANCH],
-      join(root, DATA_BRANCH)
-    )
+    runCommand(['ls', '-la'], join(root, DATA_BRANCH))
+    // runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
+    // runCommand(
+    //   ['git', 'push', '-u', 'origin', DATA_BRANCH],
+    //   join(root, DATA_BRANCH)
+    // )
   }
 
   runCommand(['ls', root])
 }
 
 export async function pushContentBranch() {
+  return
   if (!process.env['GITHUB_WORKSPACE']) {
     return
   }
