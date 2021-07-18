@@ -58,6 +58,15 @@ export async function loadContentBranch() {
 
   if (!isBranchExist) {
     console.log(`Create content branch ${DATA_BRANCH}`)
+    const pushUrl = `https://${user}:${token}@github.com/${owner}/${repo}`
+    runCommand(
+      ['git', 'config', '--global', 'user.email', 'bot@llun.dev'],
+      join(root, DATA_BRANCH)
+    )
+    runCommand(
+      ['git', 'config', '--global', 'user.name', '"Rain bots"'],
+      join(root, DATA_BRANCH)
+    )
     const branchResult = runCommand(
       ['git', 'checkout', '-B', DATA_BRANCH],
       join(root, DATA_BRANCH)
@@ -66,17 +75,19 @@ export async function loadContentBranch() {
       throw new Error('Fail to switch branch')
     }
 
-    runCommand(['pwd'], join(root, DATA_BRANCH))
     runCommand(
       ['rm', '-rf'].concat(
         readdirSync(join(root, DATA_BRANCH)).filter((item) => item !== '.git')
       ),
       join(root, DATA_BRANCH)
     )
-    runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
-    runCommand(['git', 'commit', '-m', 'Remove all files'])
+    runCommand(['git', 'add', '-f', '-A'], join(root, DATA_BRANCH))
     runCommand(
-      ['git', 'push', '-u', 'origin', DATA_BRANCH],
+      ['git', 'commit', '-m', 'Remove all files'],
+      join(root, DATA_BRANCH)
+    )
+    runCommand(
+      ['git', 'push', '-f', pushUrl, `head:${DATA_BRANCH}`],
       join(root, DATA_BRANCH)
     )
     console.log('Push empty branch')
@@ -88,14 +99,23 @@ export async function pushContentBranch() {
     return
   }
 
+  const user = process.env['GITHUB_ACTOR']
+  const token = process.env['GITHUB_TOKEN']
+  const [owner, repo] = (process.env['GITHUB_REPOSITORY'] || '').split('/')
   const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
   const root = workspace.slice(0, workspace.length - 1).join('/')
-  runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
+  const pushUrl = `https://${user}:${token}@github.com/${owner}/${repo}`
+  runCommand(['git', 'config', '--global', 'user.email', 'bot@llun.dev'])
+  runCommand(['git', 'config', '--global', 'user.name', '"Rain bots"'])
+  runCommand(['git', 'add', '-f', '-A'], join(root, DATA_BRANCH))
   runCommand(
     ['git', 'commit', '-m', 'Update contents'],
     join(root, DATA_BRANCH)
   )
-  runCommand(['git', 'push'], join(root, DATA_BRANCH))
+  runCommand(
+    ['git', 'push', '-f', pushUrl, `head:${DATA_BRANCH}`],
+    join(root, DATA_BRANCH)
+  )
 }
 
 /**
