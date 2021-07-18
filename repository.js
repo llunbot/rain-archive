@@ -74,12 +74,12 @@ export async function loadContentBranch() {
       join(root, DATA_BRANCH)
     )
     runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
-    runCommand(['git', 'status'], join(root, DATA_BRANCH))
-    // runCommand(
-    //   ['git', 'push', '-u', 'origin', DATA_BRANCH],
-    //   join(root, DATA_BRANCH)
-    // )
-    // console.log('Push empty branch')
+    runCommand(['git', 'commit', '-m', 'Remove all files'])
+    runCommand(
+      ['git', 'push', '-u', 'origin', DATA_BRANCH],
+      join(root, DATA_BRANCH)
+    )
+    console.log('Push empty branch')
   }
 }
 
@@ -88,10 +88,14 @@ export async function pushContentBranch() {
     return
   }
 
-  // const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
-  // const root = workspace.slice(0, workspace.length - 1).join('/')
-  // runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
-  // runCommand(['git', 'push'], join(root, DATA_BRANCH))
+  const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
+  const root = workspace.slice(0, workspace.length - 1).join('/')
+  runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
+  runCommand(
+    ['git', 'commit', '-m', 'Update contents'],
+    join(root, DATA_BRANCH)
+  )
+  runCommand(['git', 'push'], join(root, DATA_BRANCH))
 }
 
 /**
