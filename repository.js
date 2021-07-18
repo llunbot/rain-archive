@@ -74,10 +74,10 @@ export async function loadContentBranch() {
       join(root, DATA_BRANCH)
     )
     runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
-    // runCommand(
-    //   ['git', 'push', '-u', 'origin', DATA_BRANCH],
-    //   join(root, DATA_BRANCH)
-    // )
+    runCommand(
+      ['git', 'push', '-u', 'origin', DATA_BRANCH],
+      join(root, DATA_BRANCH)
+    )
   }
 
   runCommand(['ls', root])
@@ -90,13 +90,8 @@ export async function pushContentBranch() {
 
   const workspace = (process.env['GITHUB_WORKSPACE'] || '').split('/') ?? []
   const root = workspace.slice(0, workspace.length - 1).join('/')
-
-  runCommand(['ls', '-la'], join(root, DATA_BRANCH))
-  return
-
-  // const token = process.env['GITHUB_TOKEN']
-  // runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
-  // runCommand(['git', 'push'], join(root, DATA_BRANCH))
+  runCommand(['git', 'add', '-A'], join(root, DATA_BRANCH))
+  runCommand(['git', 'push'], join(root, DATA_BRANCH))
 }
 
 /**
