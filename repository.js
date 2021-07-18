@@ -67,20 +67,10 @@ export async function loadContentBranch() {
     }
 
     runCommand(['pwd'], join(root, DATA_BRANCH))
-    const lists = readdirSync(join(root, DATA_BRANCH))
-    console.log(lists)
     runCommand(
-      [
-        'rm',
-        '-rf',
-        '.github',
-        '.eslintrc.json',
-        '.gitignore',
-        '*.js',
-        '*.md',
-        '*.json',
-        '*.lock',
-      ],
+      ['rm', '-rf'].concat(
+        readdirSync(join(root, DATA_BRANCH)).filter((item) => item !== '.git')
+      ),
       join(root, DATA_BRANCH)
     )
     runCommand(['ls', '-la'], join(root, DATA_BRANCH))
