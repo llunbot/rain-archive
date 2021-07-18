@@ -81,8 +81,10 @@ export async function fetchRainAreaImage(timestamp, areaSizeInKm, root) {
   const imageUrl = new URL(stringUrl)
   const fileName = imageUrl.pathname.split('/').pop()
   if (!fileName) return null
-  fs.writeFileSync(path.join(root ?? '', fileName), data)
-  return path.join(root ?? '', fileName)
+  const filePath = path.join(root ?? '', fileName)
+  console.log(filePath)
+  fs.writeFileSync(filePath, data)
+  return filePath
 }
 
 /**
