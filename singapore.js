@@ -34,6 +34,23 @@ export function getFileNameTime(timestamp, minutesFloor) {
 }
 
 /**
+ * Get path for input timestamp date images
+ *
+ * @param {number} timestamp
+ * @returns {string[]}
+ */
+export function getTimestampDatePath(timestamp) {
+  const timeZone = 'Asia/Singapore'
+  const date = new Date(timestamp)
+  const zonedDate = utcToZonedTime(date, timeZone)
+  return [
+    format(zonedDate, 'yyyy', { timeZone }),
+    format(zonedDate, 'MM', { timeZone }),
+    format(zonedDate, 'dd', { timeZone }),
+  ]
+}
+
+/**
  *
  * Get weather.gov.sg url from timestamp
  *
@@ -129,7 +146,14 @@ export async function fetcher(timestamp) {
     await fetchRainAreaImage(
       time,
       'sg480km',
-      makeSureDirectoryExist(path.join(getDataPath(), 'singapore', '480'))
+      makeSureDirectoryExist(
+        path.join(
+          getDataPath(),
+          ...getTimestampDatePath(timestamp),
+          'singapore',
+          '480'
+        )
+      )
     )
     await sleep(1000)
   }
@@ -139,7 +163,14 @@ export async function fetcher(timestamp) {
     await fetchRainAreaImage(
       time,
       'sg240km',
-      makeSureDirectoryExist(path.join(getDataPath(), 'singapore', '240'))
+      makeSureDirectoryExist(
+        path.join(
+          getDataPath(),
+          ...getTimestampDatePath(timestamp),
+          'singapore',
+          '240'
+        )
+      )
     )
     await sleep(1000)
   }
@@ -149,10 +180,16 @@ export async function fetcher(timestamp) {
     await fetchRainAreaImage(
       time,
       'sg50km',
-      makeSureDirectoryExist(path.join(getDataPath(), 'singapore', '50'))
+      makeSureDirectoryExist(
+        path.join(
+          getDataPath(),
+          ...getTimestampDatePath(timestamp),
+          'singapore',
+          '50'
+        )
+      )
     )
     await sleep(1000)
   }
-
   await pushContentBranch()
 }
