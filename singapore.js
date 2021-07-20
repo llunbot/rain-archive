@@ -149,8 +149,8 @@ export async function fetcher(timestamp) {
       makeSureDirectoryExist(
         path.join(
           getDataPath(),
-          ...getTimestampDatePath(timestamp),
           'singapore',
+          ...getTimestampDatePath(timestamp),
           '480'
         )
       )
@@ -166,8 +166,8 @@ export async function fetcher(timestamp) {
       makeSureDirectoryExist(
         path.join(
           getDataPath(),
-          ...getTimestampDatePath(timestamp),
           'singapore',
+          ...getTimestampDatePath(timestamp),
           '240'
         )
       )
@@ -183,8 +183,8 @@ export async function fetcher(timestamp) {
       makeSureDirectoryExist(
         path.join(
           getDataPath(),
-          ...getTimestampDatePath(timestamp),
           'singapore',
+          ...getTimestampDatePath(timestamp),
           '50'
         )
       )
