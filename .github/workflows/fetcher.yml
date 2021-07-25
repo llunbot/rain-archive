@@ -26,3 +26,6 @@ jobs:
       - name: Fetch singapore
         run: |
           node index.js -r singapore
+      - name: Fetch malaysia
+        run: |
+          node index.js -r malaysia

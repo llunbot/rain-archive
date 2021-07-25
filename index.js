@@ -2,9 +2,11 @@
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { fetcher as singaporeFetcher } from './singapore.js'
+import { fetcher as malaysiaFetcher } from './malaysia.js'
 
 const fetchers = {
   singapore: singaporeFetcher,
+  malaysia: malaysiaFetcher,
 }
 
 const argv = yargs(hideBin(process.argv))
@@ -14,7 +16,7 @@ const argv = yargs(hideBin(process.argv))
     description: 'map region name',
     demandOption: true,
     default: 'singapore',
-    choices: ['singapore'],
+    choices: ['singapore', 'malaysia'],
   })
   .parseSync()
 
