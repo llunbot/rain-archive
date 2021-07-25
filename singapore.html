@@ -28,11 +28,45 @@
   <body>
     <div id="map"></div>
     <script>
-      var map = new maplibregl.Map({
+      const map = new maplibregl.Map({
         container: "map", // container id
         style: "https://map.llun.dev/styles/dark-matter/style.json", // style URL
         center: [103.8198, 1.3521], // starting position [lng, lat]
         zoom: 11, // starting zoom
+      });
+
+      // Get latest time
+      function getPath(timestamp) {
+        const subtractTime = timestamp - (timestamp % 300000);
+        const date = new Date(subtractTime);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const hour = date.getHours().toString().padStart(2, "0");
+        const minute = date.getMinutes().toString().padStart(2, "0");
+
+        return `https://llun.github.io/rain-archive/singapore/${year}/${month}/${day}/50/dpsri_70km_${year}${month}${day}${hour}${minute}0000dBR.dpsri.png`;
+      }
+
+      map.on("load", function () {
+        map.addSource("radar", {
+          type: "image",
+          url: `${getPath(Date.now() - 3600000)}`,
+          coordinates: [
+            [103.59949, 1.49747],
+            [104.15259, 1.49747],
+            [104.15259, 1.14154],
+            [103.59949, 1.14154],
+          ],
+        });
+        map.addLayer({
+          id: "radar-layer",
+          type: "raster",
+          source: "radar",
+          paint: {
+            "raster-fade-duration": 0,
+          },
+        });
       });
     </script>
   </body>
